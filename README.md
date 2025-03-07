@@ -1,7 +1,8 @@
 # game agent
 snake agent python pytorch
 
-## reinforcement learning ## - teaching a software agent how to behave in an environment telling it how good it is doing.
+## reinforcement learning
+    ,teaching a software agent how to behave in an environment telling it how good it is doing.
 
 reward system:
 
@@ -38,6 +39,7 @@ State (11 values)
 
 
 deep Q Learning:
+
     Q value is the quality of action
 
     steps:
