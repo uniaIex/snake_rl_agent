@@ -43,7 +43,7 @@ deep Q Learning:
     Q value is the quality of action
 
     steps:
-           0. init q value
+            0. init q value
         ->  1. choose action, predict model stat
         |   2. perform action
         |   3. measure reward
