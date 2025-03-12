@@ -1,50 +1,74 @@
-# game agent
-snake agent python pytorch
+# Snake AI with Deep Q-Learning
 
-## reinforcement learning
-    ,teaching a software agent how to behave in an environment telling it how good it is doing.
+This project demonstrates how **Q-Learning** combined with a neural network can train an AI to play the classic Snake game. The AI agent learns to maximize its score by avoiding collisions and eating food efficiently. Built using PyTorch for the neural network and Pygame for game rendering, this implementation highlights key concepts in reinforcement learning (RL).
 
-reward system:
+## Overview
+The Snake AI uses a **Deep Q-Network (DQN)** to approximate the Q-value function, which helps the agent decide the best actions. Key components include:
+- **Q-Learning**: A model-free RL algorithm that learns the value of actions in a given state.
+- **Experience Replay**: Stores past experiences (state, action, reward, next state) to break correlations in training data.
+- **Epsilon-Greedy Strategy**: Balances exploration (random actions) and exploitation (learned policy).
 
-    eat food: +10
-    game over: -10
-    anything else: 0
+## Project Structure
+- `agent.py`: Defines the RL agent, state representation, and training logic.
+- `game.py`: Implements the Snake game environment and mechanics.
+- `model.py`: Contains the neural network architecture (`Linear_QNet`) and the Q-learning trainer (`QTrainer`).
+- `helper.py`: Plots training progress (scores and mean scores over games).
 
-actions:
+## Dependencies
+- Python 3.7+
+- PyTorch
+- Pygame
+- NumPy
+- Matplotlib
 
-    [1,0,0] straight
-    [0,1,0] turn right
-    [0,0,1] turn left
+# How It Works
 
-The agent needs to know about the environment
-State (11 values)
+## State Representation
+The agent observes an **11-dimensional state vector** containing:
+- **Danger Signals** (3 boolean values):
+  - Collision risk straight ahead
+  - Collision risk to the right
+  - Collision risk to the left
+- **Direction** (4 boolean values):
+  - Current movement: Left/Right/Up/Down
+- **Food Location** (4 boolean values):
+  - Food positioned left/right/above/below the snake's head
 
-    danger
-        -straight
-        -right
-        -left
+## Neural Network Architecture
+- **Input Layer**: 11 nodes (matches state vector size)
+- **Hidden Layer**: 256 nodes with ReLU activation
+- **Output Layer**: 3 nodes (possible actions: straight, right turn, left turn)
 
-    direction
-        -left
-        -right
-        -up
-        -down
+## Training Process
 
-    food
-        -up
-        -down
-        -right
-        -left
+### Action Selection (ε-Greedy Policy)
+- **Exploration**:
+  - Random action with probability `ε` (epsilon)
+- **Exploitation**:
+  - Use neural network's predicted optimal action  
+  *Epsilon decays as the agent gains experience*
 
+### Reward System
+| Event                | Reward |
+|----------------------|--------|
+| Eating food          | +10    |
+| Collision/starvation | -10    |
+| Normal movement      | 0      |
 
+### Experience Replay
+- Stores past experiences in a replay buffer (`deque`)
+- Samples mini-batches (1,000 experiences) for training
+- Reduces correlation between consecutive samples
 
-deep Q Learning:
+### Q-Learning Update
+- Uses **Mean Squared Error (MSE)** loss
+- Implements Bellman equation:
+- Updates network weights via backpropagation
 
-    Q value is the quality of action
-
-    steps:
-            0. init q value
-        ->  1. choose action, predict model stat
-        |   2. perform action
-        |   3. measure reward
-        -<  4. update q value, train model
+## Hyperparameters
+| Parameter      | Value     | Description                          |
+|----------------|-----------|--------------------------------------|
+| `LR`           | 0.001     | Learning rate                        |
+| `GAMMA`        | 0.9       | Future reward discount factor        |
+| `MAX_MEMORY`   | 100,000   | Experience replay buffer capacity    |
+| `BATCH_SIZE`   | 1,000     | Training batch size                  |
